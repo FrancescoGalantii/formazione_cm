@@ -5,7 +5,7 @@
 
     - name: create a directory for the registry
       file:
-        path: /Users/francescogalanti/registry
+        path: /var/lib/registry
         state: directory
 
     - name: start the registry without authentication
