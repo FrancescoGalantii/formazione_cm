@@ -1,0 +1,21 @@
+---
+
+- hosts: localhost
+  become: true
+  tasks:
+
+    - name: create a directory for the registry
+      file:
+        path: /Users/francescogalanti/registry
+        state: directory
+
+    - name: start the registry without authentication
+      docker_container:
+        name: docker-registry
+        image: registry:2
+        state: started
+        restart_policy: always
+        ports:
+          - "5000:5000"
+        volumes: 
+          - /var/lib/registry:/var/lib/registry
