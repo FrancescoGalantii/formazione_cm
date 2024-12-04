@@ -1,0 +1,37 @@
+- name: Costruzione e avvio dei container Docker
+  hosts: localhost
+  tasks:
+    - name: Costruire l'immagine Docker per Ubuntu
+      community.docker.docker_image:
+        source: build
+        build:
+          path: ./ubuntu
+        name: ssh_ubuntu
+        tag: latest
+
+    - name: Avviare il container Ubuntu
+      community.docker.docker_container:
+        name: container_ubuntu
+        image: ssh_ubuntu:latest
+        state: started
+        ports:
+          - "2201:22"
+        restart_policy: always
+
+    - name: Costruire l'immagine Docker per rockylinux
+      community.docker.docker_image:
+        source: build
+        build:
+          path: ./rockylinux
+        name: ssh_rocky
+        tag: latest
+
+    - name: Avviare il container rockylinux
+      community.docker.docker_container:
+        name: container_rocky
+        image: ssh_rocky:latest
+        state: started
+        ports:
+          - "2202:22"
+        restart_policy: always
+
