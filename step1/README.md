@@ -22,6 +22,12 @@ In questo caso ho utilizzato il localhost importante però controllare prima se 
           - "5000:5000"
         volumes: 
           - /var/lib/registry:/var/lib/registry
+Per eseguire il playbook lanciare il seguente comando:
+
+`ansible-playbook -i inventory container-playbook.yml --ask-become-pass`
+L'opzione --ask-become-pass poichè sul playbook è settato become: true --> ossia `utenza root`
+!! **`se non messa questa opzione all'esecuzione del playbook verrà restituito il seguente errore:
+"module_stderr": "sudo: a password is required\n"`**
 
 
 
