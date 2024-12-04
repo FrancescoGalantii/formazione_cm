@@ -8,7 +8,7 @@ In questo caso ho utilizzato il localhost importante però controllare prima se 
 
     - name: create a directory for the registry
       file:
-        path: /Users/francescogalanti/registry
+        path: /Var/lib/registry
         state: directory
 2)**`ho startato il docker registry assegnandogli porta e volume`**
 
