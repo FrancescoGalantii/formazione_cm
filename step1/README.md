@@ -28,7 +28,7 @@ Per eseguire il playbook lanciare il seguente comando:
 
 L'opzione --ask-become-pass poichè sul playbook è settato become: true --> ossia `utenza root`
 
-!![ATTENZIONE] **`se non messa questa opzione all'esecuzione del playbook verrà restituito il seguente errore:
+!! ATTENZIONE **`se non messa questa opzione all'esecuzione del playbook verrà restituito il seguente errore:
 "module_stderr": "sudo: a password is required\n"`**
 
 
