@@ -3,6 +3,7 @@ creare un docker registry anche senzq autenticazione tramite playbook.
 In questo caso ho utilizzato il localhost importante però controllare prima se sull'host sia scaricato docker in caso contrario aggiungere task per l'installazione di docker sul playbook.
 
 **`spiegazione playbook`**
+
 1)**`Ho creato una directory per il docker registry`**
 
     - name: create a directory for the registry
