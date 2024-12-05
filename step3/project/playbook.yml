@@ -1,0 +1,6 @@
+---
+- name: manage containers with roles
+  hosts: localhost
+  roles:
+    - registry
+    - build_and_run_containers

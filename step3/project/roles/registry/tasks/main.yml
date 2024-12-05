@@ -1,0 +1,17 @@
+---
+- name: Create a directory for the registry
+  file:
+    path: /var/lib/registry
+    state: directory
+
+- name: Start the registry without authentication
+  docker_container:
+    name: docker-registry
+    image: registry:2
+    state: started
+    restart_policy: always
+    ports:
+      - "5000:5000"
+    volumes: 
+      - /var/lib/registry:/var/lib/registry
+

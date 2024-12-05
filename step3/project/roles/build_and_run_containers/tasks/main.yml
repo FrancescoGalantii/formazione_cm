@@ -1,0 +1,35 @@
+---
+- name: Build the Docker image for Ubuntu
+  community.docker.docker_image:
+    source: build
+    build:
+      path: ./ubuntu
+    name: ssh_ubuntu
+    tag: latest
+
+- name: Start the Ubuntu container
+  community.docker.docker_container:
+    name: container_ubuntu
+    image: ssh_ubuntu:latest
+    state: started
+    ports:
+      - "2201:22"
+    restart_policy: always
+
+- name: Build the Docker image for Debian
+  community.docker.docker_image:
+    source: build
+    build:
+      path: ./debian
+    name: ssh_debian
+    tag: latest
+
+- name: Start the Debian container
+  community.docker.docker_container:
+    name: container_debian
+    image: ssh_debian:latest
+    state: started
+    ports:
+      - "2202:22"
+    restart_policy: always
+
