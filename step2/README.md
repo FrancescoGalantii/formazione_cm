@@ -56,6 +56,8 @@ Per poter verificare il corretto funzionamento dell' esercizio lanciare il segue
 
 `ssh -i /Users/francescogalanti/.ssh/id_rsa -p 2201 sshuser@localhost`
 
+• se la connessione ssh funziona --> `sshuser@0ae9b6346055:~$`
+
 
 
 
