@@ -51,6 +51,7 @@ Sul mio localhost avevo gia create le chiavi ssh, ho di conseguenza fatto le seg
 `cd id_rsa.pub` che non è il file precedente ma un altro file creato all'interno delle relative directory dei container ed ho incollato la public key copiata precedentemente
 
 **`verifica funzionamento`** 
+
 Per poter verificare il corretto funzionamento dell' esercizio lanciare il seguente comando:
 
 `ssh -i /Users/francescogalanti/.ssh/id_rsa -p 2201 sshuser@localhost`
