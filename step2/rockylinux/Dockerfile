@@ -13,6 +13,7 @@ RUN mkdir /home/sshuser/.ssh && \
     chmod 700 /home/sshuser/.ssh
 
 COPY id_rsa.pub /home/sshuser/.ssh/authorized_keys
+
 RUN chmod 600 /home/sshuser/.ssh/authorized_keys && \
     chown -R sshuser:sshuser /home/sshuser/.ssh
 
