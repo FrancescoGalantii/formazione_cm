@@ -22,6 +22,8 @@ RUN sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config && \
     sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
     echo 'AllowUsers sshuser' >> /etc/ssh/sshd_config
 
+RUN ssh-keygen -A
+
 EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
