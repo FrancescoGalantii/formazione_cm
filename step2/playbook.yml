@@ -18,18 +18,18 @@
           - "2201:22"
         restart_policy: always
 
-    - name: Costruire l'immagine Docker per rockylinux
+    - name: Costruire l'immagine Docker per debian
       community.docker.docker_image:
         source: build
         build:
-          path: ./rockylinux
-        name: ssh_rocky
+          path: ./debian
+        name: ssh_debian
         tag: latest
 
-    - name: Avviare il container rockylinux
+    - name: Avviare il container debian
       community.docker.docker_container:
-        name: container_rocky
-        image: ssh_rocky:latest
+        name: container_debian
+        image: ssh_debian:latest
         state: started
         ports:
           - "2202:22"
