@@ -1,4 +1,4 @@
-FROM rockylinux:8
+FROM rockylinux:9
 
 RUN yum -y update && yum install -y \
     openssh-server \
