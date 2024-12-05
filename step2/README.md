@@ -45,8 +45,15 @@ per poi avviarlo in questo modo:
 Sul mio localhost avevo gia create le chiavi ssh, ho di conseguenza fatto le seguenti operazioni:
 
 `cd .ssh` per accedere alla cartella contenente il file id_rsa.pub 
+
 `cat id_rsa.pub` per visualizzare in output la chiave pubblica e copiarla 
+
 `cd id_rsa.pub` che non è il file precedente ma un altro file creato all'interno delle relative directory dei container ed ho incollato la public key copiata precedentemente
+
+**`verifica funzionamento`** 
+Per poter verificare il corretto funzionamento dell' esercizio lanciare il seguente comando:
+
+`ssh -i /Users/francescogalanti/.ssh/id_rsa -p 2201 sshuser@localhost`
 
 
 
