@@ -5,6 +5,8 @@ RUN yum -y update && yum install -y \
     sudo && \
     mkdir /var/run/sshd
 
+RUN ssh-keygen -A
+
 RUN useradd -ms /bin/bash sshuser && \
     echo "sshuser:password" | chpasswd && \
     usermod -aG wheel sshuser
