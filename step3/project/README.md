@@ -33,3 +33,23 @@ All'interno dei file main.yml ho definito i task che poi sono andato a richiamar
     roles:
       - registry
       - build_and_run_containers
+ed ho configurato la scelta di docker e podman in base alla disponibilità:
+
+    - name: Check if Docker is installed
+      ansible.builtin.shell: command -v docker
+      register: docker_check
+      changed_when: false
+      failed_when: false
+
+    - name: Check if Podman is installed
+      ansible.builtin.shell: command -v podman
+      register: podman_check
+      changed_when: false
+      failed_when: false
+
+    - name: Set container runtime
+      set_fact:
+        container_runtime: >
+          {{ 'docker' if docker_check.stdout != '' else
+             'podman' if podman_check.stdout != '' else
+             'none' }}
