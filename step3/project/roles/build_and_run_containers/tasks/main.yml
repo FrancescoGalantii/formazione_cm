@@ -1,4 +1,23 @@
 ---
+- name: Check if Docker is installed
+  ansible.builtin.shell: command -v docker
+  register: docker_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if Podman is installed
+  ansible.builtin.shell: command -v podman
+  register: podman_check
+  changed_when: false
+  failed_when: false
+
+- name: Set container runtime
+  set_fact:
+    container_runtime: >
+      {{ 'docker' if docker_check.stdout != '' else
+         'podman' if podman_check.stdout != '' else
+         'none' }}
+
 - name: Build the Docker image for Ubuntu
   community.docker.docker_image:
     source: build
