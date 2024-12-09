@@ -1,6 +1,7 @@
 ### **`obiettivo`**
 Creare un playbook che esegue la build di container con OS differenti.
 **`spiegazione playbook`**
+
 1)`ho costruito l'immagine docker per OS ubuntu tramite il modulo di ansible community.docker.docker_image`
 
     - name: Costruire l'immagine Docker per Ubuntu
@@ -23,7 +24,8 @@ per poi avviarlo in questo modo:
 2)`ho ripetuto lo stesso procedimento per il container con OS rockylinux`.
 
 **`spiegazione Dockerfile `**
-1)`ho passato l'immagini` --> `FROM ubuntu:latest` per ubuntu e `FROM rockylinux:8` per rocky linux 
+
+1)`ho passato l'immagini` --> `FROM ubuntu:latest` per ubuntu e `FROM debian:latest` per debian 
 
 2)`ho installato openssh, sudo ed ho creato la directory sshd`
 
@@ -42,6 +44,7 @@ per poi avviarlo in questo modo:
 
     EXPOSE 22
 **`servizio ssh`**
+
 Sul mio localhost avevo gia create le chiavi ssh, ho di conseguenza fatto le seguenti operazioni:
 
 `cd .ssh` per accedere alla cartella contenente il file id_rsa.pub 
