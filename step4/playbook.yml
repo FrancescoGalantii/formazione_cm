@@ -1,0 +1,8 @@
+---
+- name: manage containers with roles and crypt with vault
+  hosts: localhost
+  vars_files:
+    - vault.yml
+  roles:
+    - registry
+    - build_and_run_containers

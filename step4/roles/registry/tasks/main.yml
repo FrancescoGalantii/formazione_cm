@@ -1,0 +1,51 @@
+---
+- name: Check if Docker is installed
+  ansible.builtin.shell: command -v docker
+  register: docker_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if Podman is installed
+  ansible.builtin.shell: command -v podman
+  register: podman_check
+  changed_when: false
+  failed_when: false
+
+- name: Set container runtime
+  set_fact:
+    container_runtime: >
+      {{ 'docker' if docker_check.stdout != '' else
+         'podman' if podman_check.stdout != '' else
+         'none' }}
+
+- name: Create a directory for the registry
+  file:
+    path: /var/lib/registry
+    state: directory
+
+- name: Creare la directory auth 
+  file:
+    path: "/Users/francescogalanti/auth"
+    state: directory
+    mode: '0755'
+
+- name: Create htpasswd file for the registry
+  ansible.builtin.command: >
+    htpasswd -Bbn "{{ registry_user }}" "{{ registry_password }}" > /auth/htpasswd
+  when: container_runtime == "docker"
+
+- name: Start the registry with authentication
+  docker_container:
+    name: docker-registry
+    image: registry:2
+    state: started
+    restart_policy: always
+    ports:
+      - "5000:5000"
+    env:
+      REGISTRY_AUTH: "htpasswd"
+      REGISTRY_AUTH_HTPASSWD_REALM: "Registry Realm"
+      REGISTRY_AUTH_HTPASSWD_PATH: "/auth/htpasswd"
+    volumes: 
+      - /var/lib/registry:/var/lib/registry
+      - /Users/francescogalanti/auth:/auth

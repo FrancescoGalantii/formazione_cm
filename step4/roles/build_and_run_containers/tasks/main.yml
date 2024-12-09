@@ -1,0 +1,87 @@
+---
+- name: Check if Docker is installed
+  ansible.builtin.shell: command -v docker
+  register: docker_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if Podman is installed
+  ansible.builtin.shell: command -v podman
+  register: podman_check
+  changed_when: false
+  failed_when: false
+
+- name: Set container runtime
+  set_fact:
+    container_runtime: >
+      {{ 'docker' if docker_check.stdout != '' else
+         'podman' if podman_check.stdout != '' else
+         'none' }}
+
+- name: Build the Docker image for Ubuntu
+  community.docker.docker_image:
+    source: build
+    build:
+      path: ./ubuntu
+      args:
+        SSH_PASSWORD: "{{ ssh_user_password }}"
+    name: ssh_ubuntu
+    tag: latest
+
+- name: Build the Ubuntu image with Podman
+  ansible.builtin.command: >
+    podman build -t ssh_ubuntu:latest
+    --build-arg SSH_PASSWORD= "{{ ssh_user_password }}"
+    -f {{ /Users/francescogalanti/formazione_cm/step4/step3/project/playbook.yml }}/Users/francescogalanti/formazione_cm/step4/step3/project/ubuntu
+  when: container_runtime == "podman"
+
+- name: Start the Ubuntu container
+  community.docker.docker_container:
+    name: container_ubuntu
+    image: ssh_ubuntu:latest
+    state: started
+    ports:
+      - "2201:22"
+    restart_policy: always
+
+- name: Start the ubuntu container with podman
+  containers.podman.podman_container:
+    name: container_ubuntu_podman
+    image: ssh_ubuntu:latest
+    state: started
+    restart_policy: always
+  when: container_runtime == "podman"
+
+- name: build debian image with docker                                                                        
+  community.docker.docker_image:
+    source: build
+    build:
+      path: ./debian
+      args:
+        SSH_PASSWORD: "{{ ssh_user_password }}"
+    name: ssh_debian
+    tag: latest
+
+- name: Build debian image with Podman
+  ansible.builtin.command: >
+    podman build -t ssh_debian:latest
+    --build-arg SSH_PASSWORD= "{{ ssh_user_password }}"
+    -f {{ /Users/francescogalanti/formazione_cm/step4/step3/project/playbook.yml }}/Users/francescogalanti/formazione_cm/step4/step3/project/debian
+  when: container_runtime == "podman"
+
+- name: Start the Debian container
+  community.docker.docker_container:
+    name: container_debian
+    image: ssh_debian:latest
+    state: started
+    ports:
+      - "2202:22"
+    restart_policy: always
+
+- name: start the debian container with podman
+  containers.podman.podman_container:
+    name: container_debian_podman
+    image: ssh_debian:latest
+    state: started
+    restart_policy: always
+  when: container_runtime == "podman"
