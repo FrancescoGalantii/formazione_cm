@@ -2,14 +2,17 @@
 Utilizzare ansible vault per oscurare tutte le password.
 
 **`spiegazione procedimenti`**
+
 Creare un file `vault.yml` con all'interno le password da utilizzare e oscurare.
 
 **`modifiche playbook`** 
+
 All'interno del playbook ho aggiunto il file vault tramite attraverso `vars_files` , *direttiva utilizzata per includere file di variabili estern*e.
 
     vars_files:
       - vault.yml
 **`modifiche directory roles`**
+
 All'interno della directory roles sono presenti altre due directory contenenti tutte le task eseguite finora la struttura è la seguente:
 
     roles
@@ -24,6 +27,7 @@ All'interno della directory roles sono presenti altre due directory contenenti t
 Ho modificato entrambi i main.yml aggiungendo l'uso delle password specificate all'interno del vault
 
 **`verifiche finali`**
+
 • Verificare innanzitutto se i container e il docker registry sono stati ricreati correttamente lanciare quindi il comando `docker ps`
 se ricreati correttamente l'output risulterà questo:
 
