@@ -1,90 +1,20 @@
----
-- hosts: localhost
-  become: true
-  vars:
-    registry: "docker-registry"
-    image_name: "ssh_ubuntu"
-    image_tag: "latest"
-    container_name: "container_ubuntu"
+- name: Costruzione e avvio dei container Docker
+  hosts: localhost
   tasks:
-    - name: Pull Docker image
-      docker_image:
-        name: "{{ registry }}/{{ image_name }}"
-        tag: "{{ image_tag }}"
-        source: pull
+    - name: Costruire l'immagine Docker per Ubuntu
+      community.docker.docker_image:
+        source: build
+        build:
+          path: ./ubuntu
+        name: ssh_ubuntu
+        tag: latest
 
-    - name: Stop and remove the existing container
-      docker_container:
-        name: "{{ container_name }}"
-        state: absent
-
-    - name: Run Docker container
-      docker_container:
-        name: "{{ container_name }}"
-        image: "{{ registry }}/{{ image_name }}:{{ image_tag }}"
+    - name: Avviare il container Ubuntu
+      community.docker.docker_container:
+        name: container_ubuntu
+        image: ssh_ubuntu:latest
         state: started
-        restart_policy: always
         ports:
-          - "80:80"
-        volumes:
-          - "/../../host:/../../container"
-
-    - name: Install prerequisites
-      apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-        state: present
-
-    - name: Add Jenkins GPG key
-      command: curl -fsSL https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
-
-    - name: Add Jenkins repository
-      apt_repository:
-        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
-        state: present
-
-    - name: Add Docker GPG key
-      command: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-
-    - name: Add Docker repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
-
-    - name: Install Docker and Jenkins
-      apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - openjdk-11-jdk
-          - jenkins
-        state: present
-
-    - name: Start and enable Docker
-      service:
-        name: docker
-        state: started
-        enabled: true
-
-    - name: Start and enable Jenkins
-      service:
-        name: jenkins
-        state: started
-        enabled: true
-
-    - name: Add Jenkins user to Docker group
-      command: usermod -aG docker jenkins
-
-    - name: Fetch Jenkins initial admin password
-      command: cat /var/lib/jenkins/secrets/initialAdminPassword
-      register: jenkins_password
-      ignore_errors: true
-
-    - name: Show Jenkins admin password
-      debug:
-        msg: "Jenkins initial admin password is: {{ jenkins_password.stdout }}"
-
+          - "2201:22"
+        restart_policy: always
+        privileged: true
