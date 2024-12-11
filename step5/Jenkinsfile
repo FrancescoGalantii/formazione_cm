@@ -6,11 +6,6 @@ pipeline {
         IMAGE_TAG = "latest"
     }
     stages {
-        stage('Prepare Dockerfile') {
-            steps {
-                sh 'cp $WORKSPACE/step5_main@tmp/Dockerfile $WORKSPACE/Dockerfile'
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 script {
