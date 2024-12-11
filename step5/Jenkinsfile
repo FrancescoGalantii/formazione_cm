@@ -1,32 +1,35 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:latest' 
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     environment {
-        REGISTRY = "docker-registry"
-        IMAGE_NAME = "ssh_ubuntu"
+        REGISTRY = “docker-registry”
+        IMAGE_NAME = “ssh_ubuntu”
         IMAGE_TAG = "latest"
     }
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def image = docker.build("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
+                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                        def image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                        image.push() 
+                        env.BUILD_IMAGE = image.id 
+                    }
                 }
             }
         }
         stage('Tag Image') {
             steps {
                 script {
-                    def tag = "v1.0.${env.BUILD_NUMBER}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} ${REGISTRY}/${IMAGE_NAME}:${tag}"
-                }
-            }
-        }
-        stage('Push Image to Registry') {
-            steps {
-                script {
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
-                    def tag = "v1.0.${env.BUILD_NUMBER}"
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:${tag}"
+                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                        def tag = "v1.0.${env.BUILD_NUMBER}"
+                        def image = docker.image("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
+                        image.push(tag) 
+                    }
                 }
             }
         }
