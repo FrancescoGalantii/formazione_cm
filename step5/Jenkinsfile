@@ -1,8 +1,9 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = 'docker-registry'
-        IMAGE_NAME = 'localhost:5000/ssh_ubuntu'
+        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
+        DOCKER_REGISTRY = 'localhost:5000'
+        IMAGE_NAME = 'ssh_ubuntu'
         IMAGE_TAG = "latest"
     }
     stages {
