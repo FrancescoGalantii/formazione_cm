@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         REGISTRY = 'docker-registry'
-        IMAGE_NAME = 'docker-registry/ssh_ubuntu'
+        IMAGE_NAME = 'localhost:5000/ssh_ubuntu'
         IMAGE_TAG = "latest"
     }
     stages {
