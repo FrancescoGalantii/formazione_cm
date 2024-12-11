@@ -1,15 +1,15 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = “docker-registry”
-        IMAGE_NAME = “ssh_ubuntu”
+        REGISTRY = 'docker-registry'
+        IMAGE_NAME = 'ssh_ubuntu'
         IMAGE_TAG = "latest"
     }
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                    docker.withRegistry("https://${REGISTRY}", '') {
                         def image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                         image.push() 
                         env.BUILD_IMAGE = image.id 
@@ -20,7 +20,7 @@ pipeline {
         stage('Tag Image') {
             steps {
                 script {
-                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
+                    docker.withRegistry("https://${REGISTRY}", '') {
                         def tag = "v1.0.${env.BUILD_NUMBER}"
                         def image = docker.image("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
                         image.push(tag) 
