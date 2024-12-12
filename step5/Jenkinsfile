@@ -36,7 +36,8 @@ pipeline {
                     script {
                         docker.withRegistry('http://localhost:5000',) {
                             def tag = "build-${env.BUILD_NUMBER}"
-                            def image = docker.image("${IMAGE_NAME}:${tag}")
+                            def imageName = docker.image("${IMAGE_NAME}:${tag}")
+                            def image = docker.build(imageName)
                             try {
                                 image.push()
                             } catch (Exception e) {
