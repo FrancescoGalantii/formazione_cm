@@ -31,7 +31,7 @@ pipeline {
                 script {
                     def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
                     env.progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${TAG} ${env.progressiveTag}"
+                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${env.progressiveTag}"
                 }
             }
         }
