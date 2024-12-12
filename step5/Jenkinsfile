@@ -47,7 +47,7 @@ pipeline {
                                 error "Docker push failed: ${e.message}"
                             }
                         }
-                    } 
+                    //} 
                 }
             }
         }
