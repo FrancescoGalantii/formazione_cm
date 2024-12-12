@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        REGISTRY_CREDENTIALS = 'registry-credentials'
+        //REGISTRY_CREDENTIALS = 'registry-credentials'
         REGISTRY = 'registry'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
@@ -33,7 +33,7 @@ pipeline {
                         def imageName = "mystep5:${tag}"
                         def image = docker.build(imageName)
 
-                        docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
+                        docker.withRegistry('http://localhost:5000'){//, "${REGISTRY_CREDENTIALS}") {
                             image.push()
                         }
                     }
