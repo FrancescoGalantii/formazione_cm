@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = “registry”
-        IMAGE_NAME = “mystep5”
+        REGISTRY = 'registry'
+        IMAGE_NAME = 'mystep5'
         IMAGE_TAG = "latest"
     }
     stages {
