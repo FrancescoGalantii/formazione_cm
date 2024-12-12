@@ -35,6 +35,43 @@ pipeline {
             }
         }
 
+        pipeline {
+    agent any
+
+    environment {
+        REGISTRY = 'docker-registry'
+        IMAGE_NAME = 'myimage_step5'
+        TAG = 'latest'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir ('step5') {
+                    script {
+                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        docker.build(imageTag, '.')
+                    }
+                }
+            }
+        }
+
+        stage('Tagging Image') {
+            steps {
+                script {
+                    def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
+                    def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
+                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${TAG} ${progressiveTag}"
+                }
+            }
+        }
+
         stage('Push Image') {
             steps {
                 script {
@@ -43,6 +80,14 @@ pipeline {
                 }
             }
         }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
     }
 
     post {
