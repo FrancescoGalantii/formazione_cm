@@ -17,7 +17,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def customImage = docker.build("${IMAGE_NAME}:${TAG}")
+                    def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                    sh "docker build -f Dockerfile -t ${imageTag} ."
+                    def customImage = docker.build("${DOCKER_IMAGE}:${TAG}")
                 }
             }
         }
@@ -35,11 +37,6 @@ pipeline {
         stage('Push Image') {
             steps {
                 script {
-                    // Login al Docker registry usando le credenziali di Jenkins (assicurati di avere configurato 'dockerhub-credentials' in Jenkins)
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                    }
-                    
                     def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
                     sh "docker push ${progressiveTag}"
                 }
