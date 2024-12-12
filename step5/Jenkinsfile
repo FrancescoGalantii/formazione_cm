@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
-                    sh "docker build -t ${imageTag} ."
+                    sh "docker build -f Dockerfile -t ${imageTag} ."
                 }
             }
         }
