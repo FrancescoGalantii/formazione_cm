@@ -39,7 +39,7 @@ pipeline {
                 script {
                     if (env.REGISTRY_CREDENTIALS) {
                         docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
-                            def image = docker.image("${REGISTRY}:${TAG}")
+                            def image = docker.image("${IMAGE_NAME}:${progressiveTag}")
                             try {
                                 image.push()
                             } catch (Exception e) {
