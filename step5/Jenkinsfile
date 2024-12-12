@@ -18,8 +18,13 @@ pipeline {
             steps {
                 dir ('step5') {
                     script {
-                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
-                        docker.build(imageTag, '.')
+                        //def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        try {
+                            docker.build("${REGISTRY}/${IMAGE_NAME}:${TAG}")
+                        } catch (Exception e) {
+                            error "Docker build failed: ${e.message}"
+                        }
+                            
                     }
                 }
             }
@@ -29,12 +34,14 @@ pipeline {
             steps {
                 dir('step5') {
                     script {
-                        def tag = "build-${env.BUILD_NUMBER}"
-                        def imageName = "mystep5:${tag}"
-                        def image = docker.build(imageName)
-
-                        docker.withRegistry('http://localhost:5000'){//, "${REGISTRY_CREDENTIALS}") {
-                            image.push()
+                        docker.withRegistry('http://localhost:5000',) {
+                            def tag = "build-${env.BUILD_NUMBER}"
+                            def image = docker.image("${IMAGE_NAME}:${tag}")
+                            try {
+                                image.push()
+                            } catch (Exception e) {
+                                error "Docker push failed: ${e.message}"
+                            }
                         }
                     }
                 }
