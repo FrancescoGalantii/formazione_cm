@@ -32,23 +32,23 @@ pipeline {
                     def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
                     def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
                     //IMAGE_TAG = "${env.IMAGE_NAME}:${currentDate}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${env.progressiveTag}"
+                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}${TAG}:${env.progressiveTag}"
                 }
             }
         }
         stage('Docker Push') {
             steps {
                 script {
-                    //if (env.REGISTRY_CREDENTIALS) {
-                        //docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
+                    if (env.REGISTRY_CREDENTIALS) {
+                        docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
                             def image = docker.image("${IMAGE_NAME}/${env.progressiveTag}")
                             try {
                                 image.push()
                             } catch (Exception e) {
                                 error "Docker push failed: ${e.message}"
                             }
-                        //}
-                    //} 
+                        }
+                    } 
                 }
             }
         }
