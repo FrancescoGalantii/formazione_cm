@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         REGISTRY = 'docker-registry'
-        IMAGE_NAME = 'myimage'
+        IMAGE_NAME = 'myimage_step5'
         TAG = 'latest'
     }
 
