@@ -13,7 +13,8 @@ pipeline {
                     echo "Building Docker image..."
                     def dockerTag = new Date().format("yyyyMMddHHmmss")
                     env.DOCKER_TAG = dockerTag
-                    sh "docker build -t ${REGISTRY_URL}/${IMAGE_NAME}:${DOCKER_TAG} ."
+                    sh "docker build -f /var/jenkins_home/workspace/ste5_main/step5/ubuntu/Dockerfile -t localhost:5000/${IMAGE_NAME}:${DOCKER_TAG} ."
+
                     echo "Image built with tag: ${DOCKER_TAG}"
                 }
             }
