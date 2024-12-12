@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     def tag = "build-${env.BUILD_NUMBER}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${tag}"
+                    //sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${tag}"
                 }
             }
         }
@@ -38,7 +38,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    def image = docker.image(tag)
+                    def image = "${IMAGE_NAME}:${tag}"
                     try {
                         image.push()
                     } catch (Exception e) {
