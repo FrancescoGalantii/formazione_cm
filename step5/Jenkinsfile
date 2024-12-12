@@ -1,40 +1,53 @@
 pipeline {
     agent any
+
     environment {
-        REGISTRY = 'docker-registry'
-        IMAGE_NAME = 'ubuntu_step5'
-        IMAGE_TAG = "latest"
+        REGISTRY = 'localhost:5000'
+        IMAGE_NAME = 'myimage'
+        TAG = 'latest'
     }
+
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
-                        def image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                        image.push() 
-                        env.BUILD_IMAGE = image.id 
+                dir ('step5') {
+                    script {
+                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        docker.build(imageTag, '.')
                     }
                 }
             }
         }
-        stage('Tag Image') {
+
+        stage('Tagging Image') {
             steps {
                 script {
-                    docker.withRegistry("https://${REGISTRY}", 'docker-credentials') {
-                        def tag = "v1.0.${env.BUILD_NUMBER}"
-                        def image = docker.image("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
-                        image.push(tag) 
-                    }
+                    def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
+                    def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
+                    docker.image("${REGISTRY}/${IMAGE_NAME}:${TAG}").tag(progressiveTag)
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                script {
+                    def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
+                    docker.image(progressiveTag).push()
                 }
             }
         }
     }
+
     post {
         always {
             cleanWs()
         }
     }
 }
-
-
-
