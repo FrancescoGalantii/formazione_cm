@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = 'docker-registry'
+        REGISTRY = 'localhost:5000'
         IMAGE_NAME = 'myimage_step5'
         TAG = 'latest'
     }
