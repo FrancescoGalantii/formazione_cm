@@ -1,54 +1,34 @@
 pipeline {
     agent any
     environment {
-        REGISTRY_CREDENTIALS = 'registry-credentials'
-        REGISTRY = 'registry'
-        IMAGE_NAME = 'mystep5'
-        TAG = 'latest'
-        PROGRESSIVE_TAG = '' 
+        REGISTRY = “registry”
+        IMAGE_NAME = “mystep5”
+        IMAGE_TAG = "latest"
     }
-
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                dir ('step5') {
-                    script {
-                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
-                        docker.build(imageTag, '.')
+                script {
+                    docker.withRegistry("https://${REGISTRY}", 'registry-credentials') {
+                        def image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                        image.push() 
+                        env.BUILD_IMAGE = image.id 
                     }
                 }
             }
         }
-
-        stage('Tagging Image') {
+        stage('Tag Image') {
             steps {
                 script {
-                    def tag = "build-${env.BUILD_NUMBER}"
-                    //sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${tag}"
-                }
-            }
-        }
-        
-        stage('Docker Push') {
-            steps {
-                script {
-                    def image = "${IMAGE_NAME}:${tag}"
-                    try {
-                        image.push()
-                    } catch (Exception e) {
-                        error "Docker push failed: ${e.message}"
+                    docker.withRegistry("https://${REGISTRY}", 'registry-credentials') {
+                        def tag = "v1.0.${env.BUILD_NUMBER}"
+                        def image = docker.image("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
+                        image.push(tag) 
                     }
                 }
             }
         }
     }
-
     post {
         always {
             cleanWs()
