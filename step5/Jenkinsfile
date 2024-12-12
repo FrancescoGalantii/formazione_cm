@@ -38,7 +38,7 @@ pipeline {
         stage('Push Image') {
             steps {
                 script {
-                    def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
+                    def progressiveTag = "http://${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
                     sh "docker push ${progressiveTag}"
                 }
             }
