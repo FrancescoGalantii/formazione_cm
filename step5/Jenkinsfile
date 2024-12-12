@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO_URL = "https://github.com/FrancescoGalantii/formazione_cm.git"
-        GIT_BRANCH = "main"
         REGISTRY = 'localhost:5000' 
         IMAGE_NAME = 'myimage'            
         TAG = 'latest'                      
@@ -12,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: "${GIT_BRANCH}", url: "${GIT_REPO_URL}"
+                checkout scm
             }
         }
         
