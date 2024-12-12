@@ -5,7 +5,6 @@ pipeline {
         REGISTRY = 'registry'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
-        progressiveTag = ''
     }
 
     stages {
@@ -34,12 +33,13 @@ pipeline {
                         def imageName = "mystep5:${tag}"
                         def image = docker.build(imageName)
 
-                        docker.withRegistry("http://${env.REGISTRY_URL}") {
+                        docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
                             image.push()
                         }
                     }
                 }
             }
+        }
         
     }
     post {
