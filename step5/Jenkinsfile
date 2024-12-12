@@ -19,7 +19,6 @@ pipeline {
                 script {
                     def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
                     sh "docker build -f Dockerfile -t ${imageTag} ."
-                    def customImage = docker.build("${DOCKER_IMAGE}:${TAG}")
                 }
             }
         }
