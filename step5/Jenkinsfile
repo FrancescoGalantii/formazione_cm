@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = 'localhost:5000' 
-        IMAGE_NAME = 'myimage'            
-        TAG = 'latest'                      
+        REGISTRY = 'localhost:5000'
+        IMAGE_NAME = 'myimage'
+        TAG = 'latest'
     }
 
     stages {
@@ -13,14 +13,14 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 dir ('step5') {
-                   script {
-                    def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
-                    sh "docker build -t ${imageTag} ."
-                   }    
+                    script {
+                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        docker.build(imageTag, '.')
+                    }
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
                 script {
                     def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
                     def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${TAG} ${progressiveTag}"
+                    docker.image("${REGISTRY}/${IMAGE_NAME}:${TAG}").tag(progressiveTag)
                 }
             }
         }
@@ -39,16 +39,18 @@ pipeline {
             steps {
                 script {
                     def progressiveTag = "http://${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
-                    sh "docker push ${progressiveTag}"
+                    docker.image(progressiveTag).push()
                 }
             }
         }
     }
+
     post {
         always {
             cleanWs()
         }
     }
 }
+
 
 
