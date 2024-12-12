@@ -26,32 +26,21 @@ pipeline {
             }
         }
 
-        stage('Tagging Image') {
+        stage('Build and Push Docker Image') {
             steps {
-                script {
-                    def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
-                    def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
-                    //IMAGE_TAG = "${env.IMAGE_NAME}:${currentDate}"
-                    sh "docker tag ${IMAGE_NAME}:${TAG}/${IMAGE_NAME}:${env.progressiveTag}"
-                }
-            }
-        }
-        stage('Docker Push') {
-            steps {
-                script {
-                    if (env.REGISTRY_CREDENTIALS) {
-                        docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
-                            def image = docker.image("${IMAGE_NAME}/${env.progressiveTag}")
-                            try {
-                                image.push()
-                            } catch (Exception e) {
-                                error "Docker push failed: ${e.message}"
-                            }
+                dir('step5') {
+                    script {
+                        def tag = "build-${env.BUILD_NUMBER}"
+                        def imageName = "mystep5:${tag}"
+                        def image = docker.build(imageName)
+
+                        docker.withRegistry("http://${env.REGISTRY_URL}") {
+                            image.push()
                         }
-                    } 
+                    }
                 }
             }
-        }
+        
     }
     post {
         always {
