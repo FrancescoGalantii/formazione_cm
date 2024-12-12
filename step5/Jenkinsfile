@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = 'registry'
+        REGISTRY = 'localhost:5000'
         IMAGE_NAME = 'mystep5'
         IMAGE_TAG = "latest"
     }
@@ -9,7 +9,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("https://${REGISTRY}", 'registry-credentials') {
+                    docker.withRegistry("http://${REGISTRY}") {
                         def image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                         image.push() 
                         env.BUILD_IMAGE = image.id 
@@ -20,7 +20,7 @@ pipeline {
         stage('Tag Image') {
             steps {
                 script {
-                    docker.withRegistry("https://${REGISTRY}", 'registry-credentials') {
+                    docker.withRegistry("http://${REGISTRY}") {
                         def tag = "v1.0.${env.BUILD_NUMBER}"
                         def image = docker.image("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
                         image.push(tag) 
