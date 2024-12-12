@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY_URL = "http://localhost:5000" // Sostituisci con l'URL del tuo Docker registry
+        REGISTRY_URL = "localhost:5000" // Sostituisci con l'URL del tuo Docker registry
         IMAGE_NAME = "ubuntu-ssh-server"   // Nome immagine coerente con il Dockerfile fornito
     }
 
