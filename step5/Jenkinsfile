@@ -28,9 +28,9 @@ pipeline {
         stage('Tagging Image') {
             steps {
                 script {
-                    def currentDate = new Date().format('yyyyMMddHHmmss')
+                    def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
                     def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
-                    docker.image("${REGISTRY}/${IMAGE_NAME}:${TAG}").tag(progressiveTag)
+                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${TAG} ${progressiveTag}"
                 }
             }
         }
