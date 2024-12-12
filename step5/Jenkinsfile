@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         REGISTRY_CREDENTIALS = 'registry-credentials'
-        REGISTRY = 'docker-registry'
+        REGISTRY = 'registry'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
     }
