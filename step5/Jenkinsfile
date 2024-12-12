@@ -5,6 +5,7 @@ pipeline {
         REGISTRY = 'registry'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
+        progressiveTag = ''
     }
 
     stages {
@@ -31,7 +32,7 @@ pipeline {
                     def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
                     def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
                     //IMAGE_TAG = "${env.IMAGE_NAME}:${currentDate}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${TAG} ${progressiveTag}"
+                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${TAG} ${env.progressiveTag}"
                 }
             }
         }
@@ -40,7 +41,7 @@ pipeline {
                 script {
                     //if (env.REGISTRY_CREDENTIALS) {
                         //docker.withRegistry('https://index.docker.io/v1/', "${REGISTRY_CREDENTIALS}") {
-                            def image = docker.image("${IMAGE_NAME}/${progressiveTag}")
+                            def image = docker.image("${IMAGE_NAME}/${env.progressiveTag}")
                             try {
                                 image.push()
                             } catch (Exception e) {
