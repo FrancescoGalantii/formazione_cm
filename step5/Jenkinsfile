@@ -19,6 +19,7 @@ pipeline {
                 dir ('step5') {
                     script {
                         def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        // Usando il plugin Docker per costruire l'immagine
                         docker.build(imageTag, '.')
                     }
                 }
@@ -30,6 +31,7 @@ pipeline {
                 script {
                     def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
                     def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
+                    // Usando il plugin Docker per il tagging
                     docker.image("${REGISTRY}/${IMAGE_NAME}:${TAG}").tag(progressiveTag)
                 }
             }
@@ -38,7 +40,8 @@ pipeline {
         stage('Push Image') {
             steps {
                 script {
-                    def progressiveTag = "http://${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
+                    def progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${new Date().format('yyyyMMddHHmmss')}"
+                    // Usando il plugin Docker per il push
                     docker.image(progressiveTag).push()
                 }
             }
@@ -51,6 +54,7 @@ pipeline {
         }
     }
 }
+
 
 
 
