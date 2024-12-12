@@ -1,39 +1,42 @@
 pipeline {
     agent any
+
     environment {
-        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
-        DOCKER_REGISTRY = 'localhost:5000'
-        IMAGE_NAME = 'ssh_ubuntu'
-        IMAGE_TAG = "latest"
+        REGISTRY_URL = "http://localhost:5000" // Sostituisci con l'URL del tuo Docker registry
+        IMAGE_NAME = "ubuntu-ssh-server"   // Nome immagine coerente con il Dockerfile fornito
     }
+
     stages {
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                        def image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                        image.push() 
-                        env.BUILD_IMAGE = image.id 
-                    }
+                    echo "Building Docker image..."
+                    def dockerTag = new Date().format("yyyyMMddHHmmss")
+                    env.DOCKER_TAG = dockerTag
+                    sh "docker build -t ${REGISTRY_URL}/${IMAGE_NAME}:${DOCKER_TAG} ."
+                    echo "Image built with tag: ${DOCKER_TAG}"
                 }
             }
         }
-        stage('Tag Image') {
+
+        stage('Push') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
-                        def tag = "v1.0.${env.BUILD_NUMBER}"
-                        def image = docker.image("${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
-                        image.push(tag) 
-                    }
+                    echo "Pushing Docker image to registry..."
+                    sh "echo ${env.REGISTRY_PASSWORD} | docker login -u ${env.REGISTRY_USER} --password-stdin ${REGISTRY_URL}"
+                    sh "docker push ${REGISTRY_URL}/${IMAGE_NAME}:${DOCKER_TAG}"
+                    echo "Image pushed to registry with tag: ${DOCKER_TAG}"
                 }
             }
         }
     }
+
     post {
         always {
-            cleanWs()
+            echo "Pipeline completed. Cleaning up..."
+            sh "docker system prune -f"
         }
     }
 }
+
 
