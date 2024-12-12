@@ -16,9 +16,11 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                script {
+                dir ('step5') {
+                   script {
                     def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
                     sh "docker build -t ${imageTag} ."
+                   }    
                 }
             }
         }
