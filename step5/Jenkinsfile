@@ -5,7 +5,7 @@ pipeline {
         REGISTRY = 'registry'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
-        progressiveTag = '' 
+        PROGRESSIVE_TAG = '' 
     }
 
     stages {
@@ -29,9 +29,8 @@ pipeline {
         stage('Tagging Image') {
             steps {
                 script {
-                    def currentDate = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("UTC"))
-                    env.progressiveTag = "${REGISTRY}/${IMAGE_NAME}:${currentDate}"
-                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${env.progressiveTag}"
+                    def tag = "build-${env.BUILD_NUMBER}"
+                    sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${tag}"
                 }
             }
         }
@@ -39,7 +38,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    def image = docker.image(env.progressiveTag)
+                    def image = docker.image(tag)
                     try {
                         image.push()
                     } catch (Exception e) {
