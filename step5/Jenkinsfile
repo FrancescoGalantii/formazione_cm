@@ -20,6 +20,7 @@ pipeline {
                         def tag = "build-${env.BUILD_NUMBER}"
                         def imageTag = "${REGISTRY}/${IMAGE_NAME}:${tag}"
                         docker.build(imageTag, '.')
+                        env.IMAGE_TAG = tag
                     }
                 }
             }
@@ -29,8 +30,8 @@ pipeline {
             steps {
                 dir('step5') {
                     script {
-                        def tag = "build-${env.BUILD_NUMBER}"
-                        def imageName = "${REGISTRY}/${IMAGE_NAME}:${tag}"
+                        //def tag = "build-${env.BUILD_NUMBER}"
+                        def imageName = "${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                         def image = docker.image(imageName) 
 
                         docker.withRegistry('http://localhost:5000') {
