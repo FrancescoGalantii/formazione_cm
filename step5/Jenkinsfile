@@ -30,7 +30,6 @@ pipeline {
             steps {
                 dir('step5') {
                     script {
-                        //def tag = "build-${env.BUILD_NUMBER}"
                         def imageName = "${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
                         def image = docker.image(imageName) 
 
