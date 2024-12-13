@@ -52,6 +52,7 @@ La pipeline utilizza le seguenti variabili di ambiente:
 #### 3. Push dell'immagine Docker
 
 • **Scopo:** Esegue il push dell'immagine Docker al registro Docker configurato, nel mio caso ho ripreso un registry privato locale.
+
 • **Dettagli:**
   • Utilizza il registro Docker specificato nella variabile `REGISTRY`.
   
