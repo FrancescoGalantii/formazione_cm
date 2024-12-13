@@ -1,16 +1,15 @@
  ### *`obiettivo`*
 creare un docker registry anche senzq autenticazione tramite playbook.
 In questo caso ho utilizzato il localhost importante però controllare prima se sull'host sia scaricato docker in caso contrario aggiungere task per l'installazione di docker sul playbook.
+## spiegazione playbook
 
-**`spiegazione playbook`**
-
-1)**`Ho creato una directory per il docker registry`**
+1)`creare una directory per il docker registry`
 
     - name: create a directory for the registry
       file:
         path: /Var/lib/registry
         state: directory
-2)**`ho startato il docker registry assegnandogli porta e volume`**
+2)`startare il docker registry assegnandogli porta e volume`
 
     - name: start the registry without authentication
       docker_container:
@@ -24,7 +23,7 @@ In questo caso ho utilizzato il localhost importante però controllare prima se 
           - /var/lib/registry:/var/lib/registry
 Per eseguire il playbook lanciare il seguente comando:
 
-`ansible-playbook -i inventory container-playbook.yml --ask-become-pass`
+•`ansible-playbook -i inventory container-playbook.yml --ask-become-pass`
 
 L'opzione --ask-become-pass poichè sul playbook è settato become: true --> ossia `utenza root`
 
