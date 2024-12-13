@@ -17,7 +17,8 @@ pipeline {
             steps {
                 dir('step5') {
                     script {
-                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        def tag = "build-${env.BUILD_NUMBER}"
+                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${tag}"
                         // Costruisci l'immagine Docker
                         docker.build(imageTag, '.')
                     }
