@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = 'registry'
+        REGISTRY = 'localhost:5000'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
     }
@@ -15,15 +15,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir ('step5') {
+                dir('step5') {
                     script {
-                        //def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
-                        try {
-                            docker.build("${REGISTRY}/${IMAGE_NAME}:${TAG}")
-                        } catch (Exception e) {
-                            error "Docker build failed: ${e.message}"
-                        }
-                            
+                        def imageTag = "${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                        // Costruisci l'immagine Docker
+                        docker.build(imageTag, '.')
                     }
                 }
             }
@@ -35,21 +31,22 @@ pipeline {
                     script {
                         def tag = "build-${env.BUILD_NUMBER}"
                         def imageName = "${REGISTRY}/${IMAGE_NAME}:${tag}"
-                        def image = docker.image(imageName) 
 
-                        docker.withRegistry('http://localhost:5000',) {
-                            image.push() 
+                        // Recupera l'immagine costruita e pushala
+                        def image = docker.image(imageName)  // Ottieni l'immagine costruita nel primo stage
+
+                        docker.withRegistry('http://localhost:5000') {
+                            image.push()  // Fai il push
                         }
                     }
                 }
             }
         }
     }
-        
-    }
+
     post {
         always {
-            cleanWs()
+            cleanWs()  // Pulisci l'ambiente di lavoro dopo ogni esecuzione
         }
     }
 }
