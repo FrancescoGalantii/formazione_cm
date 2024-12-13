@@ -1,7 +1,6 @@
 pipeline {
     agent any
     environment {
-        //REGISTRY_CREDENTIALS = 'registry-credentials'
         REGISTRY = 'registry'
         IMAGE_NAME = 'mystep5'
         TAG = 'latest'
@@ -30,22 +29,21 @@ pipeline {
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Push Docker Image') {
             steps {
                 dir('step5') {
                     script {
+                        def tag = "build-${env.BUILD_NUMBER}"
+                        def imageName = "${REGISTRY}/${IMAGE_NAME}:${tag}"
+                        def image = docker.image(imageName) 
+
                         docker.withRegistry('http://localhost:5000',) {
-                            def tag = "build-${env.BUILD_NUMBER}"
-                            def image = docker.image("${IMAGE_NAME}:${tag}")
-                            try {
-                                image.push()
-                            } catch (Exception e) {
-                                error "Docker push failed: ${e.message}"
-                            }
+                            image.push() 
                         }
                     }
                 }
             }
+        }
         }
         
     }
