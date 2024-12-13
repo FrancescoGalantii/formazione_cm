@@ -19,7 +19,6 @@ pipeline {
                     script {
                         def tag = "build-${env.BUILD_NUMBER}"
                         def imageTag = "${REGISTRY}/${IMAGE_NAME}:${tag}"
-                        // Costruisci l'immagine Docker
                         docker.build(imageTag, '.')
                     }
                 }
@@ -32,12 +31,10 @@ pipeline {
                     script {
                         def tag = "build-${env.BUILD_NUMBER}"
                         def imageName = "${REGISTRY}/${IMAGE_NAME}:${tag}"
-
-                        // Recupera l'immagine costruita e pushala
-                        def image = docker.image(imageName)  // Ottieni l'immagine costruita nel primo stage
+                        def image = docker.image(imageName) 
 
                         docker.withRegistry('http://localhost:5000') {
-                            image.push()  // Fai il push
+                            image.push() 
                         }
                     }
                 }
@@ -47,7 +44,7 @@ pipeline {
 
     post {
         always {
-            cleanWs()  // Pulisci l'ambiente di lavoro dopo ogni esecuzione
+            cleanWs() 
         }
     }
 }
